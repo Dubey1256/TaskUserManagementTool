@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "my-taskuser-webpart-client-side-solution",
+    "id": "ad621d8c-f9bf-4d6f-830b-f93286b9531a",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.19.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "my-taskuser-webpart description"
+      },
+      "longDescription": {
+        "default": "my-taskuser-webpart description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "my-taskuser-webpart Feature",
+        "description": "The feature that activates elements of the my-taskuser-webpart solution.",
+        "id": "21ca284b-822d-4968-b5fd-cac0e6da3ba1",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/my-taskuser-webpart.sppkg"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.18.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.12.0"
+    },
+    "version": "1.19.0",
+    "libraryName": "my-taskuser-webpart",
+    "libraryId": "ad621d8c-f9bf-4d6f-830b-f93286b9531a",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "my-taskuser-webpart",
+    "solutionShortDescription": "my-taskuser-webpart description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
