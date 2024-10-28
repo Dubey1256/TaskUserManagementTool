@@ -14,6 +14,7 @@ import { ITaskUsersProps } from './components/ITaskUsersProps';
 
 export interface ITaskUsersWebPartProps {
   description: string;
+  TaskUserManagement:"BE8CC55E-B5C8-46DB-A784-CD76595F6F86";
 }
 
 export default class TaskUsersWebPart extends BaseClientSideWebPart<ITaskUsersWebPartProps> {
@@ -29,7 +30,8 @@ export default class TaskUsersWebPart extends BaseClientSideWebPart<ITaskUsersWe
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        userDisplayName: this.context.pageContext.user.displayName,
+        TaskUserManagement:this.properties.TaskUserManagement
       }
     );
 
@@ -110,6 +112,9 @@ export default class TaskUsersWebPart extends BaseClientSideWebPart<ITaskUsersWe
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                }),
+                PropertyPaneTextField('TaskUserManagement', {
+                  label: "TaskUserManagement",
                 })
               ]
             }
