@@ -5,4 +5,6 @@ export interface ITaskUsersProps {
   hasTeamsContext: boolean;
   userDisplayName: string;
   TaskUserManagement:any;
+  siteUrl:any;
+  context:any;
 }

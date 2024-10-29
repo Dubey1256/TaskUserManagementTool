@@ -21,6 +21,7 @@
     "@microsoft/sp-webpart-base": "1.19.0",
     "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-table": "^8.20.5",
+    "bootstrap": "^5.3.3",
     "file-saver": "^2.0.5",
     "jspdf-autotable": "^3.8.4",
     "react": "17.0.1",

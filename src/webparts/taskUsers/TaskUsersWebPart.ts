@@ -31,7 +31,9 @@ export default class TaskUsersWebPart extends BaseClientSideWebPart<ITaskUsersWe
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
-        TaskUserManagement:this.properties.TaskUserManagement
+        TaskUserManagement:this.properties.TaskUserManagement,
+        siteUrl: this.context.pageContext.web.absoluteUrl,
+        context: this.context
       }
     );
 

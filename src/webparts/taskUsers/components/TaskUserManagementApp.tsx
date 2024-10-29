@@ -1,35 +1,34 @@
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 import { Web } from "sp-pnp-js";
-import { Panel, PrimaryButton } from '@fluentui/react';
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Panel, PanelType, PrimaryButton } from '@fluentui/react';
 import GlobalCommanTable from './TaskUserManagementTable';
 //import GlobalCommanTable from './GlobalCommanTable2';
 import { ColumnDef } from '@tanstack/react-table';
-import './Style.css';
 // import * as moment from 'moment';
-
-const baseURL = "https://smalsusinfolabs.sharepoint.com/sites/Portal/Adarsh"
-const listId = "AA3411E9-0D7E-4F52-A30F-165FD76FDFF2"
-export default function MyComponent() {
+import "./Style.css"
+// const baseURL = "https://smalsusinfolabs.sharepoint.com/sites/Portal/Adarsh"
+// const listId = "AA3411E9-0D7E-4F52-A30F-165FD76FDFF2"
+const TaskUsermanagement = (props: any) => {
     const [listItems, setListItems] = useState([]);
-    const [time, setTime] = useState(() => new Date());
+    // const [time, setTime] = useState(() => new Date());
     const [updateVal, setUpdateVal] = useState<any>({});
-    const [colName, setData] = useState<any>({ 'Id': '', 'Title': '', 'Name': '', 'Address': '', 'MobileNo': '', 'DOB': '', 'Skills': '', 'TestLookup': '', 'Hobbies': [] });
+    const [data, setData] = useState<any>({});
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
-    const [lookuplistitems, setLookupListItems] = useState<any>([]);
 
-    useEffect(() => {
-        const clock = setInterval(() => {
-            setTime(new Date());
-        }, 1000);
-        return () => clearInterval(clock)
+    // useEffect(() => {
+    //     const clock = setInterval(() => {
+    //         setTime(new Date());
+    //     }, 1000);
+    //     return () => clearInterval(clock)
 
-    }, [])
+    // }, [])
 
     useEffect(() => {
         getListData();
-        getLookupListData();
+
     }, []);
 
     const openAddPanel = () => {
@@ -50,103 +49,88 @@ export default function MyComponent() {
         setIsUpdateOpen(false)
     }
     const getListData = () => {
-        const web = new Web(baseURL);
-        web.lists.getById(listId).items.select('Id', 'Title', 'Name', 'Address', 'MobileNo', 'DOB', 'Skills', 'TestLookup/Id', 'TestLookup/Title', 'Hobbies/Id', 'Hobbies/Hobbies').expand('TestLookup', 'Hobbies').get().then((response: any) => {
+        const web = new Web(props?.props?.siteUrl);
+        web.lists.getById(props?.props?.TaskUserManagement).items.select('Id', 'Title', 'Group', 'Role', 'Company', 'Email', 'ItemImage', 'Team', "Suffix").get().then((response: any) => {
             setListItems(response);
         }).catch((error: any) => {
             console.error(error);
         });
     };
 
-    const getLookupListData = () => {
-        const web = new Web(baseURL);
-        web.lists.getById("75BFD2EE-0FFF-46CD-AE25-C7F78D7A40E3").items.select('Id', 'Title', 'Hobbies').get().then((response: any) => {
-            setLookupListItems(response);
-        }).catch((error) => {
-            console.log(error);
-        });
-    };
-
-
     const updateHandler = (param: any) => {
         openUpdatePanel()
         setUpdateVal(param);
         setData({
             Title: param.Title,
-            Name: param.Name,
-            Address: param.Address,
-            MobileNo: param.MobileNo,
-            DOB: param.DOB,
-            Skills: param.Skills,
-            TestLookup: param.TestLookup,
-            Hobbies: param.Hobbies
+            Group: param.Group,
+            Role: param.Role,
+            Company: param.Company,
+            Email: param.Email,
+            ItemImage: param.ItemImage,
+            Team: param.Team
         });
         // rerender();
 
     };
 
-
     const AddData = () => {
-        const newValue = {
-            Title: colName.Title,
-            Name: colName.Name,
-            Address: colName.Address,
-            MobileNo: colName.MobileNo,
-            DOB: colName.DOB,
-            Skills: colName.Skills,
-            TestLookupId:  colName.TestLookup,
-            HobbiesId: colName.Hobbies,
-        };
-
-        const confirmAdd = window.confirm("Are you sure you want to add the item?");
-
-        if (confirmAdd) {
-            const web = new Web(baseURL);
-            web.lists.getById(listId).items.add(newValue).then((response: any) => {
-                alert("Item Added Successfully");
-                closeAddPanel();
-                getListData();
-                getLookupListData();
-            }).catch((error: any) => {
-                console.error(error);
-            });
+        const { Title, Group, Role, Company, Email, ItemImage, Team, Suffix } = data;
+        if (Title && Group && Role && Company && Email && ItemImage && Team && Suffix) {
+            const newValue = {
+                Title,
+                Group,
+                Role,
+                Company, // Ensure this is a valid field name
+                Email,
+                ItemImage,
+                Team,
+                Suffix
+            };
+    
+            console.log(newValue); // Log to see the structure
+    
+            const confirmAdd = window.confirm("Are you sure you want to add the item?");
+            
+            if (confirmAdd) {
+                const web = new Web(props?.props?.siteUrl);
+                web.lists.getById(props?.props?.TaskUserManagement).items.add(newValue)
+                    .then((response) => {
+                        alert("Item added successfully");
+                        closeAddPanel();
+                        getListData();
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        alert("An error occurred while adding the item.");
+                    });
+            }
         } else {
-            alert("Addition Cancelled");
+            alert("All fields are required!");
         }
     };
+    
+    
 
     const UpdateData = () => {
-        // let testLookup:any = []
-        // let lookup = parseInt(colName.TestLookup)
-        // if(lookup != null){      
-        //     testLookup.push(lookup)
-        // }
-        // let hobbies:any = []
-        // let myHobby = parseInt(colName.Hobbies)
-        // if(myHobby != null){ 
-        //     hobbies.push(myHobby)
-        // }
         const updateDataValue = {
-            // ID: colName.Id,
-            Title: colName.Title,
-            Name: colName.Name,
-            Address: colName.Address,
-            MobileNo: colName.MobileNo,
-            DOB: colName.DOB,
-            Skills: colName.Skills,
-            TestLookupId:  colName.TestLookup.Title ? colName.TestLookup.Id.toString() : colName.TestLookup ,
-            HobbiesId: colName.Hobbies.Hobbies ? colName.Hobbies.Id.toString() : colName.Hobbies ,
+            // ID: data.Id,
+            Title: data.Title,
+            Group: data.Group,
+            Role: data.Role,
+            Company: data.Company,
+            Email: data.Email,
+            ItemImage: data.ItemImage,
+            Team: data.Team,
+            Siffix: data.Suffix
         };
-
         const confirmUpdate = window.confirm("Are you sure you want to update this item?");
 
         if (confirmUpdate) {
-            const web = new Web(baseURL);
-            web.lists.getById(listId).items.getById(updateVal.Id).update(updateDataValue).then((response: any) => {
+            const web = new Web(props?.props?.siteUrl);
+            web.lists.getById(props?.props?.TaskUserManagement).items.getById(updateVal.Id).update(updateDataValue).then((response: any) => {
                 alert("Update Successful");
                 closeUpdatePanel();
                 getListData();
-                getLookupListData();
             }).catch((error: any) => {
                 console.error(error);
             });
@@ -154,17 +138,14 @@ export default function MyComponent() {
             alert("Updation Cancelled");
         }
     };
-
-
     // deleting data from the list
     const DeleteData = (data: any) => {
         const confirmDelete = window.confirm('Are you sure you want to delete this item?');
         if (confirmDelete) {
-            const web = new Web(baseURL);
-            web.lists.getById(listId).items.getById(data.Id).recycle().then((response: any) => {
+            const web = new Web(props?.props?.siteUrl);
+            web.lists.getById(props?.props?.TaskUserManagement).items.getById(data.Id).recycle().then((response: any) => {
                 alert('Delete Successful');
-                getListData()
-                getLookupListData()
+                getListData();
             })
                 .catch((error: any) => {
                     console.error(error);
@@ -184,27 +165,26 @@ export default function MyComponent() {
             accessorKey: "Title", placeholder: "Title", header: "", size: 50,
         },
         {
-            accessorKey: "Name", placeholder: "Name", header: "", size: 80,
+            accessorKey: "Group", placeholder: "Group", header: "", size: 80,
         },
         {
-            accessorKey: "Address", placeholder: "Address", header: "", size: 60,
+            accessorKey: "Role", placeholder: "Role", header: "", size: 60,
         },
         {
-            accessorKey: "MobileNo", placeholder: "MobileNo", header: "", size: 60,
+            accessorKey: "Company", placeholder: "Company", header: "", size: 60,
         },
         {
-            accessorKey: "DOB", placeholder: "DOB", header: "", size: 60,
+            accessorKey: "Email", placeholder: "Email", header: "", size: 60,
         },
         {
-            accessorKey: "Skills", placeholder: "Skills", header: "", size: 60,
+            accessorKey: "ItemImage", placeholder: "ItemImage", header: "", size: 60,
         },
         {
-            accessorKey: "TestLookup.Title", placeholder: "Lookup", header: "", size: 60,
+            accessorKey: "Team", placeholder: "Team", header: "", size: 60,
         },
         {
-            accessorKey: "Hobbies.Hobbies", placeholder: "hobby", header: "", size: 60,
+            accessorKey: "Suffix", placeholder: "Suffix", header: "", size: 60,
         },
-      
         {
             cell: ({ row, getValue }) => (
                 <>
@@ -236,139 +216,117 @@ export default function MyComponent() {
     const callBackData = React.useCallback((_elem: any, getSelectedRowModel: any, ShowingData: any) => {
     }, []);
 
-
-
-
     return (
         <>
             <h5>Welcome to's WebPart</h5>
             <hr />
-
             <div >
                 {listItems && <div>
                     <GlobalCommanTable showPagination={true} columns={columns} data={listItems} showHeader={true} callBackData={callBackData} />
                 </div>}
-
-
-
-
-
                 <PrimaryButton onClick={openAddPanel} >Open Add Item</PrimaryButton>
 
                 <div>
                     <Panel
                         isOpen={isAddOpen}
+                        type={PanelType.medium}
                         onDismiss={closeAddPanel}
-                        headerText="Add or Update                                                 "
+                        headerText=" Add Employee"
                         closeButtonAriaLabel="Close"
                     >
-                        <form action="">
-                            <br /><br />
-                            <label htmlFor=""> Enter Title : </label>
-                            <input type="text" onChange={e => setData({ ...colName, Title: e.target.value })} />
-                            <br /><br />
-                            <label htmlFor=""> Enter Name: </label>
-                            <input type="text" onChange={e => setData({ ...colName, Name: e.target.value })} />
-                            <br /><br />
-
-                            <label htmlFor=""> Enter Address : </label>
-                            <input type="text" onChange={e => setData({ ...colName, Address: e.target.value })} />
-                            <br /><br />
-                            <label htmlFor=""> Enter Mobile : </label>
-                            <input type="text" onChange={e => setData({ ...colName, MobileNo: e.target.value })} />
-                            <br /><br />
-                            <label htmlFor=""> Enter DOB : </label>
-                            <input type="text" onChange={e => setData({ ...colName, DOB: e.target.value })} />
-                            <br /><br />
-                            <label htmlFor=""> Enter Skills : </label>
-                            <input type="text" onChange={e => setData({ ...colName, Skills: e.target.value })} />
-                            <br /><br />
-
-                            <label htmlFor="">Enter TestLookup: </label>
-                            <select id="TestLookup" name="Lookup" onChange={e => setData({ ...colName, TestLookup: e.target.value })}>
-                                <option>Select</option>
-                                {
-                                    lookuplistitems?.map((elem: any) =>
-                                        <option value={elem.Id}>{elem.Title}</option>
-                                    )
-                                }
-                            </select>
-                            <br /><br />
-
-                            <label htmlFor="">Enter hobby: </label>
-                            <select id="Hobbies" name="hobby" onChange={e => setData({ ...colName, Hobbies: e.target.value })}>
-                                <option>Select</option>
-                                {
-                                    lookuplistitems?.map((elem: any) =>
-                                        <option value={elem.Id}>{elem.Hobbies}</option>
-                                    )
-                                }
-                            </select>
-                            <br /><br />
-
-                            <PrimaryButton type='button' onClick={AddData} >Add</PrimaryButton>
+                        <form className="p-4 border rounded bg-light">
+                            <div className="mb-3">
+                                <label className="form-label">Name</label>
+                                <input type="text" className="form-control" onChange={e => setData({ ...data, Title: e.target.value })} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">Group</label>
+                                <input type="text" className="form-control" onChange={e => setData({ ...data, Group: e.target.value })} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">Role</label>
+                                <input type="text" className="form-control" onChange={e => setData({ ...data, Role: e.target.value })} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">Mobile</label>
+                                <input type="text" className="form-control" onChange={e => setData({ ...data, Company: e.target.value })} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">Email</label>
+                                <input type="email" className="form-control" onChange={e => setData({ ...data, Email: e.target.value })} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">ItemImage</label>
+                                <input type="email" className="form-control" onChange={e => setData({ ...data, ItemImage: e.target.value })} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">Team</label>
+                                <input type="text" className="form-control" onChange={e => setData({ ...data, Team: e.target.value })} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">Suffix</label>
+                                <input type="text" className="form-control" onChange={e => setData({ ...data, Suffix: e.target.value })} />
+                            </div>
+                            <div className="d-flex justify-content-end">
+                                <button type="button" className="btn btn-primary me-2" onClick={AddData}>
+                                    Save
+                                </button>
+                                <button type="button" className="btn btn-secondary" onClick={closeAddPanel}>
+                                    Cancel
+                                </button>
+                            </div>
                         </form>
                     </Panel>
                 </div>
                 <div>
                     <Panel
                         isOpen={isUpdateOpen}
+                        type={PanelType.medium}
                         onDismiss={closeUpdatePanel}
                         headerText="Update"
                         closeButtonAriaLabel="Close"
                     >
                         <form action="">
                             <br /><br />
-                            <label htmlFor=""> Enter Title : </label>
-                            <input type="text" value={colName.Title} onChange={e => setData({ ...colName, Title: e.target.value })} />
+                            <label htmlFor="">Name</label>
+                            <input type="text" value={data.Title} onChange={e => setData({ ...data, Title: e.target.value })} />
                             <br /><br />
-                            <label htmlFor=""> Enter Name : </label>
-                            <input type="text" value={colName.Name} onChange={e => setData({ ...colName, Name: e.target.value })} />
+                            <label htmlFor="">Group</label>
+                            <input type="text" value={data.Group} onChange={e => setData({ ...data, Group: e.target.value })} />
                             <br /><br />
-
-                            <label htmlFor=""> Enter Address : </label>
-                            <input type="text" value={colName.Address} onChange={e => setData({ ...colName, Address: e.target.value })} />
+                            <label htmlFor="">Role</label>
+                            <input type="text" value={data.Role} onChange={e => setData({ ...data, Role: e.target.value })} />
                             <br /><br />
-                            <label htmlFor=""> Enter Mobile : </label>
-                            <input type="text" value={colName.MobileNo} onChange={e => setData({ ...colName, MobileNo: e.target.value })} />
+                            <label htmlFor="">Mobile</label>
+                            <input type="text" value={data.Company} onChange={e => setData({ ...data, Company: e.target.value })} />
                             <br /><br />
-                            <label htmlFor=""> Enter DOB : </label>
-                            <input type="text" value={colName.DOB} onChange={e => setData({ ...colName, DOB: e.target.value })} />
+                            <label htmlFor="">Email</label>
+                            <input type="text" value={data.Email} onChange={e => setData({ ...data, Email: e.target.value })} />
                             <br /><br />
-                            <label htmlFor=""> Enter Skills : </label>
-                            <input type="text" value={colName.Skills} onChange={e => setData({ ...colName, Skills: e.target.value })} />
+                            <label htmlFor="">ItemImage</label>
+                            <input type="text" value={data.ItemImage} onChange={e => setData({ ...data, ItemImage: e.target.value })} />
                             <br /><br />
-
-                            <label htmlFor="">Enter TestLookup: </label>
-                            <select id="TestLookup" name="Lookup" value={colName.TestLookup} onChange={e => setData({ ...colName, TestLookup: e.target.value })}>
-                                <option>Select</option>
-                                {
-                                    lookuplistitems?.map((ele: any) =>
-                                        <option value={ele.Id}>{ele.Title}</option>
-                                    )
-                                }
-                            </select>
+                            <label htmlFor="">Team</label>
+                            <input type="text" value={data.Team} onChange={e => setData({ ...data, Team: e.target.value })} />
                             <br /><br />
-
-                            <label htmlFor="">Enter hobby: </label>
-                            <select id="Hobbies" name="hobby" value={colName.Hobbies} onChange={e => setData({ ...colName, Hobbies: e.target.value })}>
-                                <option>Select</option>
-                                {
-                                    lookuplistitems?.map((ele: any) =>
-                                        <option value={ele.Id}>{ele.Hobbies}</option>
-                                    )
-                                }
-                            </select>
+                            <label htmlFor="">Suffix</label>
+                            <input type="text" value={data.Suffix} onChange={e => setData({ ...data, Suffix: e.target.value })} />
                             <br /><br />
-
-
-                            <PrimaryButton type='button' onClick={UpdateData}>Update</PrimaryButton>
+                            {/* <PrimaryButton type='button' onClick={UpdateData}>Update</PrimaryButton> */}
+                            <footer className="pull-right my-2">
+                                <button className="btn btn-primary mx-1" onClick={UpdateData}>
+                                    Update
+                                </button>
+                                <button className="btn btn-default" onClick={closeUpdatePanel}>
+                                    Cancel
+                                </button>
+                            </footer>
                         </form>
                     </Panel>
                 </div>
             </div>
-            <h6>Time: {time.toLocaleTimeString()}</h6>
+            {/* <h6>Time: {time.toLocaleTimeString()}</h6> */}
         </>
     )
-
 }
+export default TaskUsermanagement;

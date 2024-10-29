@@ -7,7 +7,7 @@ export default class TaskUsers extends React.Component<ITaskUsersProps, {}> {
   public render(): React.ReactElement<ITaskUsersProps> {
  
     return (
-      <TaskUserManagementApp/>
+      <TaskUserManagementApp props={this.props}/>
     );
   }
 }

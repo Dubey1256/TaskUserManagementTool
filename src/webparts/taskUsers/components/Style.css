@@ -1,0 +1,28 @@
+/* .i_a_8474018e {
+    border: 1px solid #e5e5e5;
+    border-bottom: 0;
+    flex-basis: 0;
+    margin: 15px auto 0;
+    max-width: 1416px;
+    min-height: 0;
+} */
+
+.j_b_8474018e {
+    border: 1px solid #e5e5e5;
+    border-bottom: 0;
+    flex-basis: 0;
+    margin: 15px auto 0;
+    max-width: 1403px;
+    min-height: 0;
+}
+
+.table-hover>tbody>tr:hover {
+    --bs-table-accent-bg: var(--bs-table-hover-bg);
+    color: var(--bs-table-hover-color);
+}
+.searchs{
+    float:right;
+}
+.icon {
+    float: right;
+}
